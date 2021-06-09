@@ -5,6 +5,7 @@ import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.extension.activerecord.Model;
 
 import java.io.Serializable;
+import java.math.BigInteger;
 
 
 /**
@@ -20,17 +21,17 @@ public class TStorage extends Model<TStorage> {
     private static final long serialVersionUID = 1L;
 
     @TableId(value = "id", type = IdType.AUTO)
-    private Integer id;
+    private BigInteger id;
     private String commodityCode;
     private String name;
     private Integer count;
 
 
-    public Integer getId() {
+    public BigInteger getId() {
         return id;
     }
 
-    public void setId(Integer id) {
+    public void setId(BigInteger id) {
         this.id = id;
     }
 

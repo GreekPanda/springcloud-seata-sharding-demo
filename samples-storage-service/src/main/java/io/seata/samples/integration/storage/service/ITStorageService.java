@@ -18,4 +18,6 @@ public interface ITStorageService extends IService<TStorage> {
      * 扣减库存
      */
     ObjectResponse decreaseStorage(CommodityDTO commodityDTO);
+
+    ObjectResponse increaseStorage(CommodityDTO commodityDTO);
 }

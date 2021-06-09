@@ -1,5 +1,6 @@
 package io.seata.samples.integration.storage.controller;
 
+import com.alibaba.fastjson.JSON;
 import io.seata.samples.integration.common.dto.CommodityDTO;
 import io.seata.samples.integration.common.response.ObjectResponse;
 import io.seata.samples.integration.storage.service.ITStorageService;
@@ -32,8 +33,17 @@ public class TStorageController {
      */
     @PostMapping("dec_storage")
     ObjectResponse decreaseStorage(@RequestBody CommodityDTO commodityDTO){
-        log.info("请求库存微服务：{}",commodityDTO.toString());
+        log.info("请求库存微服务：{}", JSON.toJSONString(commodityDTO));
         return storageService.decreaseStorage(commodityDTO);
+    }
+
+    /**
+     * 增肌库存
+     */
+    @PostMapping("inc_storage")
+    ObjectResponse increaseStorage(@RequestBody CommodityDTO commodityDTO){
+        log.info("请求库存微服务：{}", JSON.toJSONString(commodityDTO));
+        return storageService.increaseStorage(commodityDTO);
     }
 }
 
