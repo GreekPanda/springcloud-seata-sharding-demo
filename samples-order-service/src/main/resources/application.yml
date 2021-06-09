@@ -1,0 +1,88 @@
+server:
+  port: 8101
+#====================================stream =============================================
+spring:
+  shardingsphere:
+    datasource:
+      names: ds0
+      ds0:
+        type: com.zaxxer.hikari.HikariDataSource
+        driver-class-name: com.mysql.jdbc.Driver
+        jdbc-url: jdbc:mysql://192.168.9.136:3306/ds1?useUnicode=true&characterEncoding=UTF-8&useSSL=false
+        username: root
+        password: 1qMMa0qhruVt&sXp
+    sharding:
+      tables:
+        t_order:
+          actual-data-nodes: ds0.t_order_$->{202001..202012}
+          table-strategy:
+            standard:
+              sharding-column: create_month
+              preciseAlgorithmClassName: io.seata.samples.integration.order.config.OrderPreciseShardingTableAlgorithm
+              rangeAlgorithmClassName: io.seata.samples.integration.order.config.OrderRangeShardingTableAlgorithm
+#            #inline配置的话，比较单一
+#            inline:
+#              sharding-column: create_month
+#              algorithm-expression: t_order_$->{create_month}
+    props:
+      sql.show: true
+      executor.size: 100
+  application:
+    name: dubbo-order-example
+
+#====================================Dubbo config===============================================
+dubbo:
+  application:
+    id: dubbo-order-example
+    name: dubbo-order-example
+    qosEnable: false
+  protocol:
+    id: dubbo
+    name: dubbo
+    port: 20880
+  registry:
+    id: dubbo-order-example-registry
+    address: nacos://192.168.9.136:8848?namespace=40508bb4-179e-4c98-a2f1-c2c031c20b3c
+    check: false
+  config-center:
+    address: nacos://192.168.9.136:8848?namespace=40508bb4-179e-4c98-a2f1-c2c031c20b3c
+  metadata-report:
+    address: nacos://192.168.9.136:8848?namespace=40508bb4-179e-4c98-a2f1-c2c031c20b3c
+  consumer:
+    check: false
+    retries: 0
+#====================================mybatis-plus config===============================================
+mybatis-plus:
+  mapper-locations: classpath*:/mapper/*.xml
+  typeAliasesPackage: io.seata.samples.integration.*.entity
+  configuration:
+    map-underscore-to-camel-case: true
+    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
+
+#====================================Seata Config===============================================
+seata:
+  enabled: true
+  application-id: order-seata-example
+  tx-service-group: order-service-seata-service-group # 事务群组（可以每个应用独立取名，也可以使用相同的名字）
+  registry:
+    file:
+      name: file.conf
+    type: nacos
+    nacos:
+      server-addr: 192.168.9.136:8848
+      namespace: 40508bb4-179e-4c98-a2f1-c2c031c20b3c
+      group: SEATA_GROUP
+      userName: "nacos"
+      password: "nacos"
+  config:
+    file:
+      name: file.conf
+    type: nacos
+    nacos:
+      namespace: 40508bb4-179e-4c98-a2f1-c2c031c20b3c
+      server-addr: 192.168.9.136:8848
+      group: SEATA_GROUP
+      userName: "nacos"
+      password: "nacos"
+  enable-auto-data-source-proxy: true
+  use-jdk-proxy: true

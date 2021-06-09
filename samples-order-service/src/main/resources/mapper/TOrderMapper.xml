@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="io.seata.samples.integration.order.mapper.TOrderMapper">
+
+    <!-- 开启二级缓存 -->
+    <!--<cache type="org.mybatis.caches.ehcache.LoggingEhcache"/>-->
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="io.seata.samples.integration.order.entity.TOrder">
+        <id column="id" property="id" />
+        <result column="order_no" property="orderNo" />
+        <result column="user_id" property="userId" />
+        <result column="commodity_code" property="commodityCode" />
+        <result column="count" property="count" />
+        <result column="amount" property="amount" />
+        <result column="create_month" property="createMonth" />
+    </resultMap>
+
+    <!-- 通用查询结果列 -->
+    <sql id="Base_Column_List">
+        id, order_no, user_id, commodity_code, count, amount, create_month
+    </sql>
+    <!--创建订单-->
+    <insert id="createOrder" useGeneratedKeys="true" keyProperty="id"
+            parameterType="io.seata.samples.integration.order.entity.TOrder">
+        insert into t_order (id, order_no, user_id, commodity_code, count, amount)
+        values(#{order.id}, #{order.orderNo}, #{order.userId},
+        #{order.commodityCode}, #{order.count}, #{order.amount})
+    </insert>
+
+    <!--按月份查找订单-->
+    <select id="listOrderByCreateMonth" resultType="io.seata.samples.integration.common.dto.OrderDTO">
+        select o1.* from t_order o1 left join t_order o2 on o1.id = o2.id
+        where
+         o1.create_month = #{startMonth} or o1.create_month = #{endMonth}
+        # or o1.create_month in (202001,202002)
+        # or o1.id between 1 and 20
+        # or o2.create_month in (202003,202004)
+        # or
+        or o1.create_month between 202008 and 202009
+        or o1.create_month &gt;= 202010 and o1.create_month &lt;= 202012
+        order by o1.id
+        limit 1,1
+    </select>
+
+</mapper>
